@@ -2,6 +2,7 @@ package whale
 
 import "fmt"
 
+// Bonus is the bonus for one player it's unique
 type Bonus int
 
 const (

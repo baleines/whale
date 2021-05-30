@@ -1,5 +1,6 @@
 package whale
 
+// Card is the enum defining all cards in the game
 type Card int
 
 const (

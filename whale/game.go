@@ -64,7 +64,7 @@ func (g *Game) CurentPlayer() *Player {
 	return &g.Players[g.playerIndex]
 }
 
-// CurentPlayer index is the index of player to play
+// CurentPlayerIndex index is the index of player to play
 func (g *Game) CurentPlayerIndex() int {
 	return g.playerIndex
 }
