@@ -43,7 +43,7 @@ func (d *Deck) Pick() Card {
 
 func (d *Deck) Discard(c Card) {
 	if c == UnknownCard {
-		panic("should never discard unkown card")
+		panic("should never discard unknown card")
 	}
 	d.discarded = append(d.discarded, c)
 }
