@@ -22,17 +22,8 @@ var (
 	term = termenv.ColorProfile()
 )
 
-// Messages are events that we respond to in our Update function. This
-// particular one indicates that the timer has ticked.
-type TickEvent time.Time
-
-func tick() tea.Msg {
-	time.Sleep(time.Second)
-	return TickEvent{}
-}
-
 func (m model) Init() tea.Cmd {
-	return tick
+	return nil
 }
 
 // Return a function that will colorize the foreground of a given string.
@@ -41,26 +32,26 @@ func makeFgStyle(color string) func(string) string {
 }
 
 var (
-	VeryLightBlue = makeFgStyle("45")
-	LightBlue     = makeFgStyle("39")
-	Blue          = makeFgStyle("27")
-	DarkBlue      = makeFgStyle("20")
-	Grey          = makeFgStyle("#888888")
+	verylightBlue = makeFgStyle("45")
+	lightBlue     = makeFgStyle("39")
+	blue          = makeFgStyle("27")
+	darkBlue      = makeFgStyle("20")
+	grey          = makeFgStyle("#888888")
 )
 
 // ColorizeWhale the whale base on index
 func ColorizeWhale(i int, s string) string {
 	switch i {
 	case 0:
-		return VeryLightBlue(s)
+		return verylightBlue(s)
 	case 1:
-		return LightBlue(s)
+		return lightBlue(s)
 	case 2:
-		return Blue(s)
+		return blue(s)
 	case 3:
-		return DarkBlue(s)
+		return darkBlue(s)
 	default:
-		return Grey(s)
+		return grey(s)
 	}
 }
 
@@ -68,15 +59,15 @@ func ColorizeWhale(i int, s string) string {
 func ColorizeWater(i int, s string) string {
 	switch i {
 	case 0:
-		return DarkBlue(s)
+		return darkBlue(s)
 	case 1:
-		return Blue(s)
+		return blue(s)
 	case 2:
-		return LightBlue(s)
+		return lightBlue(s)
 	case 3:
-		return VeryLightBlue(s)
+		return verylightBlue(s)
 	case 4:
-		return Grey(s)
+		return grey(s)
 	default:
 		return s
 	}
@@ -85,7 +76,7 @@ func ColorizeWater(i int, s string) string {
 func (m model) View() string {
 	player := m.game.CurentPlayer()
 	// The header
-	s := Blue("~WHALE GAME") + "     (q to quit)\n"
+	s := blue("~WHALE GAME") + "     (q to quit)\n"
 	for lvl := 5; lvl > 0; lvl-- {
 		for i, p := range m.game.Players {
 			w := ""
@@ -115,7 +106,7 @@ func (m model) View() string {
 	}
 	s += "\n"
 	for i := range m.game.Players {
-		s += Grey(fmt.Sprintf("   P%d    ", i))
+		s += grey(fmt.Sprintf("   P%d    ", i))
 	}
 	s += "\n\n"
 
@@ -143,7 +134,7 @@ func (m model) View() string {
 
 	// The footer
 	for i := 0; i < m.game.PlayerCount(); i++ {
-		s += LightBlue("~ ") + Blue("~ ") + VeryLightBlue("~ ") + DarkBlue("~  ")
+		s += lightBlue("~ ") + blue("~ ") + verylightBlue("~ ") + darkBlue("~  ")
 	}
 	s += "\n"
 

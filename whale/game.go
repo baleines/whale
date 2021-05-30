@@ -2,6 +2,7 @@ package whale
 
 import "math/rand"
 
+// Game holds data related to a game
 type Game struct {
 	// deck of cards
 	Deck *Deck
@@ -35,7 +36,7 @@ func Table(nbPlayers int) []Player {
 	return players
 }
 
-// Creates a new game with nbPlayers players.
+// NewGame creates a new game with nbPlayers players.
 func NewGame(nbPlayers int) *Game {
 	deck := NewDeck()
 	deck.Shuffle()

@@ -19,6 +19,7 @@ var bonusList = [...]Bonus{
 	BonusPiranha,
 }
 
+// BonusList give the list of all available bonuses
 func BonusList() []Bonus {
 	return bonusList[:]
 }
@@ -68,6 +69,7 @@ func ActionList() []Action {
 	return actionList[:]
 }
 
+// Player is the struct holding player data
 type Player struct {
 	// Water level of the player
 	Water int
@@ -79,6 +81,7 @@ type Player struct {
 	BonusPlayed bool
 }
 
+// NewPlayer creates a player with the given bonus
 func NewPlayer(bonus Bonus) *Player {
 	return &Player{
 		Water:       0,
@@ -88,6 +91,7 @@ func NewPlayer(bonus Bonus) *Player {
 	}
 }
 
+// String exports player details as string
 func (p *Player) String() string {
 	s := fmt.Sprintf("Water:%d Cards:[", p.Water)
 	for i, c := range p.Cards {
@@ -100,10 +104,12 @@ func (p *Player) String() string {
 	return s
 }
 
+// IsWinner returns true is the player won
 func (p *Player) IsWinner() bool {
 	return p.Water >= 5
 }
 
+// AvailableActions list action available for player
 func (p *Player) AvailableActions() []Action {
 	actions := []Action{}
 	// actions
@@ -151,6 +157,7 @@ func (p *Player) AvailableActions() []Action {
 	return actions
 }
 
+// Play makes the given action and discard cards to deck
 func (p *Player) Play(d *Deck, a Action) {
 	switch a {
 	case Skip:
@@ -185,10 +192,13 @@ func (p *Player) Play(d *Deck, a Action) {
 	}
 }
 
+// AddCard adds the given card to player's hand
 func (p *Player) AddCard(c Card) {
 	p.Cards = append(p.Cards, c)
 }
 
+// GetCard removes the given card from player's hand
+// returns false if the card is not in player's hand
 func (p *Player) GetCard(c Card) bool {
 	for i := range p.Cards {
 		if c == p.Cards[i] {

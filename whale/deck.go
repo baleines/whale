@@ -13,6 +13,7 @@ const (
 	doubleWaves = 4
 )
 
+// NewDeck creates a new deck base one cards distribution (const)
 func NewDeck() *Deck {
 	d := &Deck{}
 	for i := 0; i < water; i++ {
@@ -29,6 +30,7 @@ func NewDeck() *Deck {
 	return d
 }
 
+// Pick a card from remaining cards
 func (d *Deck) Pick() Card {
 	if len(d.remaining) == 0 {
 		d.Shuffle()
@@ -41,6 +43,7 @@ func (d *Deck) Pick() Card {
 	return card
 }
 
+// Discard adds the card to the discard pile
 func (d *Deck) Discard(c Card) {
 	if c == UnknownCard {
 		panic("should never discard unknown card")
