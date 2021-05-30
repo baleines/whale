@@ -77,13 +77,10 @@ func (g *Game) NextPlayer() *Player {
 	}
 
 	g.playerIndex++
-	if g.playerIndex > len(g.Players) {
-		panic("invalid player selected")
-	}
 
 	if g.playerIndex == len(g.Players) {
 		g.Round++
-		g.playerIndex -= len(g.Players)
+		g.playerIndex = 0
 	}
 	return &g.Players[g.playerIndex]
 }

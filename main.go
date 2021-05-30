@@ -12,18 +12,28 @@ import (
 )
 
 type model struct {
-	game    *whale.Game
-	actions []whale.Action // items on the to-do list
-	cursor  int            // which to-do list item our cursor is pointing at
-	end     bool           // indicates end of game
+	game     *whale.Game
+	actions  []whale.Action // items on the to-do list
+	cursor   int            // which to-do list item our cursor is pointing at
+	end      bool           // indicates end of game
+	humamIdx int            // indicate the index of the human playing
 }
 
 var (
 	term = termenv.ColorProfile()
 )
 
+// Messages are events that we respond to in our Update function. This
+// particular one indicates that the timer has ticked.
+type TickEvent time.Time
+
+func tick() tea.Msg {
+	time.Sleep(time.Second)
+	return TickEvent{}
+}
+
 func (m model) Init() tea.Cmd {
-	return nil
+	return tick
 }
 
 // Return a function that will colorize the foreground of a given string.
@@ -105,8 +115,14 @@ func (m model) View() string {
 		s += ColorizeWhale(i, ` (॰  \_/ `)
 	}
 	s += "\n"
+	// show the active player in white
 	for i := range m.game.Players {
-		s += grey(fmt.Sprintf("   P%d    ", i))
+		pNum := fmt.Sprintf("   P%d    ", i)
+		if i == m.game.CurentPlayerIndex() {
+			s += pNum
+		} else {
+			s += grey(pNum)
+		}
 	}
 	s += "\n\n"
 
@@ -114,7 +130,7 @@ func (m model) View() string {
 		s += "        * * *\n"
 		s += fmt.Sprintf("    PLAYER %d WINS !\n", m.game.CurentPlayerIndex())
 		s += "        * * *\n"
-	} else {
+	} else if m.game.CurentPlayerIndex() == m.humamIdx {
 		s += fmt.Sprintf("Player:%d ", m.game.CurentPlayerIndex())
 		s += player.String()
 		s += "\n"
@@ -149,7 +165,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	if m.end {
 		return m, tea.Quit
 	}
-
 	if str, ok := msg.(tea.KeyMsg); ok {
 		// Cool, what was the actual key pressed?
 		switch str.String() {
@@ -157,6 +172,32 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		// These keys should exit the program.
 		case "ctrl+c", "q":
 			return m, tea.Quit
+		}
+	}
+	// only human player is playing
+	if m.game.CurentPlayerIndex() != m.humamIdx {
+		if _, ok := msg.(TickEvent); ok {
+			// always plays the first available action
+			player.Play(m.game.Deck, m.actions[0])
+			if m.game.CurentPlayer().IsWinner() {
+				m.end = true
+			}
+			player.AddCard(m.game.Deck.Pick())
+			m.cursor = 0
+			m.game.NextPlayer()
+			return m, tick
+		}
+		// wait for tick
+		return m, nil
+	}
+
+	// human is playing skip tick event
+	if _, ok := msg.(TickEvent); ok {
+		return m, nil
+	}
+	if str, ok := msg.(tea.KeyMsg); ok {
+		// Cool, what was the actual key pressed?
+		switch str.String() {
 
 		// The "up" and "k" keys move the cursor up
 		case "up", "k":
@@ -183,13 +224,19 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.cursor = 0
 		}
 	}
-	return m, nil
+	return m, tick
 }
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
+	const nbPlayers = 4
+	humanIdx := rand.Int() % nbPlayers
 	var initialModel = model{
-		game: whale.NewGame(4),
+		game:     whale.NewGame(nbPlayers),
+		actions:  []whale.Action{},
+		cursor:   0,
+		end:      false,
+		humamIdx: humanIdx,
 	}
 
 	p := tea.NewProgram(initialModel)
