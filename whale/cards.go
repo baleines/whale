@@ -3,6 +3,7 @@ package whale
 // Card is the enum defining all cards in the game
 type Card int
 
+// all possible cards
 const (
 	UnknownCard Card = iota
 	Water

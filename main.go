@@ -23,8 +23,7 @@ var (
 	term = termenv.ColorProfile()
 )
 
-// Messages are events that we respond to in our Update function. This
-// particular one indicates that the timer has ticked.
+// TickEvent indicates that the timer has ticked.
 type TickEvent time.Time
 
 func tick() tea.Msg {

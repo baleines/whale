@@ -5,6 +5,7 @@ import "fmt"
 // Bonus is the bonus for one player it's unique
 type Bonus int
 
+// All bonuses as enum
 const (
 	BonusUnknown Bonus = iota
 	BonusPirat
@@ -25,8 +26,10 @@ func BonusList() []Bonus {
 	return bonusList[:]
 }
 
+// Action represents all possible actions in the game
 type Action int
 
+// All possible actions as enum
 const (
 	UnknownAction Action = iota
 	Skip

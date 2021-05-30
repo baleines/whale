@@ -25,7 +25,7 @@ func Table(nbPlayers int) []Player {
 	if nbPlayers > 4 {
 		panic("max player is 4")
 	}
-	var bonuses []Bonus = BonusList()
+	bonuses := BonusList()
 	rand.Shuffle(len(bonuses), func(i, j int) {
 		bonuses[i], bonuses[j] = bonuses[j], bonuses[i]
 	})

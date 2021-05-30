@@ -2,6 +2,7 @@ package whale
 
 import "math/rand"
 
+// Deck represent the pile and discard pile
 type Deck struct {
 	remaining []Card
 	discarded []Card
@@ -51,6 +52,7 @@ func (d *Deck) Discard(c Card) {
 	d.discarded = append(d.discarded, c)
 }
 
+// Shuffle set the cards in random order and adds the discard pile if no more cards
 func (d *Deck) Shuffle() {
 	// get back remaining cards if needed
 	if len(d.remaining) == 0 {
