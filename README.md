@@ -1,6 +1,12 @@
 # Whale
 
-Whale is a fun simple card game for 2 to 4 players
+[![Build Status](https://github.com/pmalhaire/whale/workflows/test%20and%20build/badge.svg)](https://github.com/pmalhaire/whale/actions?workflow=test%20and%20build)
+[![codecov](https://codecov.io/gh/codecov/example-go/branch/main/graph/badge.svg)](https://codecov.io/gh/codecov/example-go)
+[![Go Report Card](https://goreportcard.com/badge/github.com/pmalhaire/whale)](https://goreportcard.com/report/github.com/pmalhaire/whale)
+
+Whale is a fun simple card game for 2 to 4 players.
+
+
 
 ## curent status
 
