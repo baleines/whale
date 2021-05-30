@@ -159,12 +159,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, tea.Quit
 	}
 
-	switch msg := msg.(type) {
-	// Is it a key press?
-	case tea.KeyMsg:
-
+	if str, ok := msg.(tea.KeyMsg); ok {
 		// Cool, what was the actual key pressed?
-		switch msg.String() {
+		switch str.String() {
 
 		// These keys should exit the program.
 		case "ctrl+c", "q":

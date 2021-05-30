@@ -7,7 +7,7 @@ type Game struct {
 	Deck *Deck
 	// slice holding players
 	Players []Player
-	// number of curent round
+	// number of current round
 	Round int
 	// index of playing player
 	playerIndex int
@@ -75,13 +75,13 @@ func (g *Game) NextPlayer() *Player {
 		return nil
 	}
 
-	g.playerIndex += 1
+	g.playerIndex++
 	if g.playerIndex > len(g.Players) {
 		panic("invalid player selected")
 	}
 
 	if g.playerIndex == len(g.Players) {
-		g.Round += 1
+		g.Round++
 		g.playerIndex -= len(g.Players)
 	}
 	return &g.Players[g.playerIndex]

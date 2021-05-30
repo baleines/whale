@@ -72,7 +72,8 @@ func TestPlayer_AvailableActions(t *testing.T) {
 			want: []Action{PutTwoWater, PutWaterDouble, Skip},
 		},
 	}
-	for _, tt := range tests {
+	for i := range tests {
+		tt := tests[i]
 		t.Run(tt.name, func(t *testing.T) {
 			p := &Player{
 				Water:       tt.fields.Water,
@@ -159,7 +160,8 @@ func TestPlayer_Play(t *testing.T) {
 			want: want{[]Card{DoubleWave}, 2},
 		},
 	}
-	for _, tt := range tests {
+	for i := range tests {
+		tt := tests[i]
 		t.Run(tt.name, func(t *testing.T) {
 			p := &Player{
 				Water:       tt.fields.Water,

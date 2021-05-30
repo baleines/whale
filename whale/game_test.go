@@ -48,7 +48,8 @@ func TestGame_PlayerCount(t *testing.T) {
 			want: 4,
 		},
 	}
-	for _, tt := range tests {
+	for i := range tests {
+		tt := tests[i]
 		t.Run(tt.name, func(t *testing.T) {
 			g := &Game{
 				Deck:        tt.fields.Deck,
