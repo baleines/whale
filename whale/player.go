@@ -143,21 +143,21 @@ func (p *Player) AvailableActions() []Action {
 	// But always before bonuses
 	// This ensures always doing the first action finishes the game
 	actions = append(actions, Skip)
-	// bonus
-	if !p.BonusPlayed && p.BonusType != BonusUnknown {
-		var action Action
-		switch p.BonusType {
-		case BonusPirat:
-			action = PlayPirat
-		case BonusGhost:
-			action = PlayGhost
-		case BonusRound:
-			action = PlayRound
-		case BonusPiranha:
-			action = PlayPiranha
-		}
-		actions = append(actions, action)
-	}
+	// bonuses Not implemented yet
+	// if !p.BonusPlayed && p.BonusType != BonusUnknown {
+	// 	var action Action
+	// 	switch p.BonusType {
+	// 	case BonusPirat:
+	// 		action = PlayPirat
+	// 	case BonusGhost:
+	// 		action = PlayGhost
+	// 	case BonusRound:
+	// 		action = PlayRound
+	// 	case BonusPiranha:
+	// 		action = PlayPiranha
+	// 	}
+	// 	actions = append(actions, action)
+	// }
 	return actions
 }
 

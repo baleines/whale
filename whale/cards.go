@@ -21,7 +21,7 @@ func (c Card) String() string {
 		"UnknownCard",
 		"||",
 		"~",
-		"~~",
+		"≈",
 		"Pirat",
 		"Ghost",
 		"Round",
