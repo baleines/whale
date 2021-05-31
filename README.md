@@ -38,6 +38,20 @@ Game Steps :
 6. If Player reach five water jet's he wins and ends the game
 7. Next player plays continue from 3
 
+## release
+
+Prebuilt release binaries are available :
+
+1. Download `tar.gz`
+2. Unzip the file
+3. Run `whale` :
+
+```
+./whale
+```
+
+[releases](https://github.com/pmalhaire/whale/releases)
+
 ## build
 
 ```
