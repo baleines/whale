@@ -88,6 +88,25 @@ func TestPlayer_AvailableActions(t *testing.T) {
 	}
 }
 
+func TestPlayer_String(t *testing.T) {
+	p := NewPlayer(BonusPirat)
+	p.AddCard(Water)
+	if p.String() != `Water:0 Cards:[||]` {
+		t.Errorf("unexpected player representation:%s", p.String())
+	}
+}
+
+func TestPlayer_Info(t *testing.T) {
+	p := NewPlayer(BonusPirat)
+	if !reflect.DeepEqual(p.Info(), PlayerInfo{
+		CardCount:   0,
+		Water:       0,
+		BonusType:   BonusPirat,
+		BonusPlayed: false,
+	}) {
+		t.Errorf("unexpected player info:%v", p.Info())
+	}
+}
 func TestPlayer_Play(t *testing.T) {
 	type fields struct {
 		Water       int
