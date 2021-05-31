@@ -22,11 +22,11 @@ The goal is to get 5 water jet above your whale.
 
 To add a water jet above your whale you need to play cards.
 
-`~ + ||` discard a wave card (~) and put a water card (||) above you : +1 water
+`~ + ||` discard a wave card (`~`) and put a water card (`||`) above you : +1 water
 
-`≈ + ||` discard a doubleWave card (~) and put a water card (||) above you : +1 water
+`≈ + ||` discard a doubleWave card (`~`) and put a water card (`||`) above you : +1 water
 
-`≈ + || + ||` discard a doubleWave card (~) and put two water cards (||) above your whale : +2 water
+`≈ + || + ||` discard a doubleWave card (`~`) and put two water cards (`||`) above your whale : +2 water
 
 Game Steps :
 
