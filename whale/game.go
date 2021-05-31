@@ -14,6 +14,16 @@ type Game struct {
 	playerIndex int
 }
 
+// State data available to all players
+type State struct {
+	// info available to all players
+	PlayersInfo []PlayerInfo
+	// number of current round
+	Round int
+	// index of playing player
+	PlayerIndex int
+}
+
 // number of cards in the initial hand
 const intialCardCount = 3
 
@@ -83,4 +93,22 @@ func (g *Game) NextPlayer() *Player {
 		g.playerIndex = 0
 	}
 	return &g.Players[g.playerIndex]
+}
+
+// State return information about the game available to all players
+func (g *Game) State() State {
+	playersInfo := []PlayerInfo{}
+	for _, p := range g.Players {
+		playersInfo = append(playersInfo, PlayerInfo{
+			CardCount:   len(p.Cards),
+			Water:       p.Water,
+			BonusType:   p.BonusType,
+			BonusPlayed: p.BonusPlayed,
+		})
+	}
+	return State{
+		PlayersInfo: playersInfo,
+		Round:       g.Round,
+		PlayerIndex: g.playerIndex,
+	}
 }

@@ -73,12 +73,24 @@ func ActionList() []Action {
 	return actionList[:]
 }
 
-// Player is the struct holding player data
+// Player is holding player data
 type Player struct {
-	// Water level of the player
-	Water int
 	// Cards in player hand
 	Cards []Card
+	// Water level of the player
+	Water int
+	// Type of bonus for player
+	BonusType Bonus
+	// Where the bonus is played or not
+	BonusPlayed bool
+}
+
+// PlayerInfo represents public player data
+type PlayerInfo struct {
+	// CardCount number of cards of player
+	CardCount int
+	// Water level of the player
+	Water int
 	// Type of bonus for player
 	BonusType Bonus
 	// Where the bonus is played or not
@@ -211,4 +223,14 @@ func (p *Player) GetCard(c Card) bool {
 		}
 	}
 	return false
+}
+
+// Info return info on player available to all players
+func (p *Player) Info() PlayerInfo {
+	return PlayerInfo{
+		CardCount:   len(p.Cards),
+		Water:       p.Water,
+		BonusType:   p.BonusType,
+		BonusPlayed: p.BonusPlayed,
+	}
 }

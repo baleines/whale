@@ -88,6 +88,26 @@ func TestGame_CurentPlayer(t *testing.T) {
 	expect(0)
 }
 
+func TestGame_State(t *testing.T) {
+	nbPlayer := 4
+	game := NewGame(nbPlayer)
+
+	expect := func(p *Player, pI PlayerInfo) {
+		if len(p.Cards) != pI.CardCount {
+			t.Error("unexpected state card count")
+		}
+		if p.Water != pI.Water {
+			t.Error("unexpected state water")
+		}
+	}
+	for i := 0; i < nbPlayer; i++ {
+		p := game.CurentPlayer()
+		pI := game.State().PlayersInfo[i]
+		expect(p, pI)
+		_ = game.NextPlayer()
+	}
+}
+
 func TestGame_EntireGame(t *testing.T) {
 	nbPlayer := 4
 	game := NewGame(nbPlayer)
