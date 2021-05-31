@@ -3,17 +3,17 @@ package tui
 import (
 	"math/rand"
 	"time"
-	"whale/whale"
+	"whale/game"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
 
 type model struct {
-	game     *whale.Game
-	actions  []whale.Action // items on the to-do list
-	cursor   int            // which to-do list item our cursor is pointing at
-	end      bool           // indicates end of game
-	humamIdx int            // indicate the index of the human playing
+	game     *game.Game
+	actions  []game.Action // items on the to-do list
+	cursor   int           // which to-do list item our cursor is pointing at
+	end      bool          // indicates end of game
+	humamIdx int           // indicate the index of the human playing
 }
 
 // NewWhale returns a model for a one player whale game
@@ -22,8 +22,8 @@ func NewWhale() tea.Model {
 	const nbPlayers = 4
 	humanIdx := rand.Int() % nbPlayers
 	return &model{
-		game:     whale.NewGame(nbPlayers),
-		actions:  []whale.Action{},
+		game:     game.NewGame(nbPlayers),
+		actions:  []game.Action{},
 		cursor:   0,
 		end:      false,
 		humamIdx: humanIdx,

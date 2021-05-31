@@ -1,4 +1,4 @@
-package whale
+package game
 
 // Card is the enum defining all cards in the game
 type Card int

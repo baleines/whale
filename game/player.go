@@ -1,4 +1,4 @@
-package whale
+package game
 
 import "fmt"
 
