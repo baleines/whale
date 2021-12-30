@@ -21,6 +21,17 @@ var bonusList = [...]Bonus{
 	BonusPiranha,
 }
 
+// String converts enum to string for printing
+func (b Bonus) String() string {
+	return [...]string{
+		"BonusUnknown",
+		"BonusPirat",
+		"BonusGhost",
+		"BonusRound",
+		"BonusPiranha",
+	}[b]
+}
+
 // BonusList give the list of all available bonuses
 func BonusList() []Bonus {
 	return bonusList[:]
@@ -83,6 +94,8 @@ type Player struct {
 	BonusType Bonus
 	// Where the bonus is played or not
 	BonusPlayed bool
+	// Public infos from other players
+	PlayersInfo *[]PlayerInfo
 }
 
 // PlayerInfo represents public player data
@@ -98,12 +111,13 @@ type PlayerInfo struct {
 }
 
 // NewPlayer creates a player with the given bonus
-func NewPlayer(bonus Bonus) *Player {
+func NewPlayer(bonus Bonus, playersInfo *[]PlayerInfo) *Player {
 	return &Player{
 		Water:       0,
 		Cards:       []Card{},
 		BonusType:   bonus,
 		BonusPlayed: false,
+		PlayersInfo: playersInfo,
 	}
 }
 
@@ -156,25 +170,28 @@ func (p *Player) AvailableActions() []Action {
 	// This ensures always doing the first action finishes the game
 	actions = append(actions, Skip)
 	// bonuses Not implemented yet
-	// if !p.BonusPlayed && p.BonusType != BonusUnknown {
-	// 	var action Action
-	// 	switch p.BonusType {
-	// 	case BonusPirat:
-	// 		action = PlayPirat
-	// 	case BonusGhost:
-	// 		action = PlayGhost
-	// 	case BonusRound:
-	// 		action = PlayRound
-	// 	case BonusPiranha:
-	// 		action = PlayPiranha
-	// 	}
-	// 	actions = append(actions, action)
-	// }
+	if !p.BonusPlayed && p.BonusType != BonusUnknown {
+		var action Action
+		switch p.BonusType {
+		case BonusPirat:
+			action = PlayPirat
+		case BonusGhost:
+			action = PlayGhost
+		case BonusRound:
+			action = PlayRound
+		case BonusPiranha:
+			action = PlayPiranha
+		default:
+			fmt.Println("unexpected bonus:", p.BonusType)
+			panic("invalid bonus")
+		}
+		actions = append(actions, action)
+	}
 	return actions
 }
 
 // Play makes the given action and discard cards to deck
-func (p *Player) Play(d *Deck, a Action) {
+func (p *Player) Play(d *Deck, a Action, targetedPlayers []*Player) {
 	switch a {
 	case Skip:
 		// no op
@@ -205,6 +222,22 @@ func (p *Player) Play(d *Deck, a Action) {
 		}
 		p.Water += 2
 		d.Discard(DoubleWave)
+	case PlayPirat:
+		if !p.PlayBonus(BonusPirat, targetedPlayers) {
+			panic("invalid action")
+		}
+	case PlayGhost:
+		if !p.PlayBonus(BonusPiranha, targetedPlayers) {
+			panic("invalid action")
+		}
+	case PlayRound:
+		if !p.PlayBonus(BonusRound, targetedPlayers) {
+			panic("invalid action")
+		}
+	case PlayPiranha:
+		if !p.PlayBonus(BonusPiranha, targetedPlayers) {
+			panic("invalid action")
+		}
 	}
 }
 
@@ -223,6 +256,45 @@ func (p *Player) GetCard(c Card) bool {
 		}
 	}
 	return false
+}
+
+func playBonus(p *Player, b Bonus, targetedPlayers []*Player) bool {
+	switch b {
+	case BonusPirat:
+		p.BonusPlayed = true
+		targetedPlayers[0].Water--
+		p.Water++
+	case BonusGhost:
+		p.BonusPlayed = true
+		// swap cards
+		p.Cards, targetedPlayers[0].Cards = targetedPlayers[0].Cards, p.Cards
+	case BonusPiranha:
+		p.BonusPlayed = true
+		// remove 2 water
+		targetedPlayers[0].Water--
+		targetedPlayers[1].Water--
+		// TODO fix deck add back discarded water and check 0
+	case BonusRound:
+		p.BonusPlayed = true
+		// keep first value
+		waters := targetedPlayers[0].Water
+		// swap waters form one player with the next one
+		for i := 0; i < len(targetedPlayers)-1; i++ {
+			targetedPlayers[i].Water = targetedPlayers[i+1].Water
+		}
+		// get the last player water to the first one
+		targetedPlayers[len(targetedPlayers)-1].Water = waters
+	default:
+		return false
+	}
+	return true
+}
+
+func (p *Player) PlayBonus(b Bonus, targetedPlayers []*Player) bool {
+	if p.BonusType != b {
+		return false
+	}
+	return playBonus(p, b, targetedPlayers)
 }
 
 // Info return info on player available to all players

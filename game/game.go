@@ -12,6 +12,8 @@ type Game struct {
 	Round int
 	// index of playing player
 	playerIndex int
+	// public infos of all players
+	playersInfo *[]PlayerInfo
 }
 
 // State data available to all players
@@ -28,7 +30,7 @@ type State struct {
 const intialCardCount = 3
 
 // Table creates nbPlayers players with random bonuses
-func Table(nbPlayers int) []Player {
+func Table(nbPlayers int) ([]Player, *[]PlayerInfo) {
 	if nbPlayers < 2 {
 		panic("invalid player count must be more than 2")
 	}
@@ -40,27 +42,39 @@ func Table(nbPlayers int) []Player {
 		bonuses[i], bonuses[j] = bonuses[j], bonuses[i]
 	})
 	players := make([]Player, nbPlayers)
+	// lazy intialisation of players info could be improved
+	playersInfo := make([]PlayerInfo, nbPlayers)
 	for i := 0; i < nbPlayers; i++ {
-		players[i] = *NewPlayer(bonuses[i])
+		players[i] = *NewPlayer(bonuses[i], &playersInfo)
 	}
-	return players
+	return players, &playersInfo
 }
 
 // NewGame creates a new game with nbPlayers players.
 func NewGame(nbPlayers int) *Game {
 	deck := NewDeck()
 	deck.Shuffle()
-	players := Table(nbPlayers)
+	players, playersInfo := Table(nbPlayers)
 
 	// draw cards
 	for i := 0; i < nbPlayers*intialCardCount; i++ {
 		players[i%nbPlayers].AddCard(deck.Pick())
 	}
-	return &Game{
+	game := Game{
 		Deck:        deck,
 		Players:     players,
 		Round:       0,
 		playerIndex: 0,
+		playersInfo: playersInfo,
+	}
+	// update players info after drawing cards
+	game.UpdatePlayersInfo()
+	return &game
+}
+
+func (g *Game) UpdatePlayersInfo() {
+	for i := range g.Players {
+		(*g.playersInfo)[i] = g.Players[i].Info()
 	}
 }
 
@@ -81,6 +95,9 @@ func (g *Game) CurentPlayerIndex() int {
 
 // NextPlayer returns the next player to play
 func (g *Game) NextPlayer() *Player {
+	// update player infos
+	g.UpdatePlayersInfo()
+
 	// end game
 	if g.Players[g.playerIndex].IsWinner() {
 		return nil
@@ -97,17 +114,8 @@ func (g *Game) NextPlayer() *Player {
 
 // State return information about the game available to all players
 func (g *Game) State() State {
-	playersInfo := []PlayerInfo{}
-	for _, p := range g.Players {
-		playersInfo = append(playersInfo, PlayerInfo{
-			CardCount:   len(p.Cards),
-			Water:       p.Water,
-			BonusType:   p.BonusType,
-			BonusPlayed: p.BonusPlayed,
-		})
-	}
 	return State{
-		PlayersInfo: playersInfo,
+		PlayersInfo: *g.playersInfo,
 		Round:       g.Round,
 		PlayerIndex: g.playerIndex,
 	}

@@ -8,7 +8,7 @@ import (
 func TestGame_PlayerCount(t *testing.T) {
 	type fields struct {
 		Deck        *Deck
-		Players     []Player
+		Players     int
 		Round       int
 		playerIndex int
 	}
@@ -21,7 +21,7 @@ func TestGame_PlayerCount(t *testing.T) {
 			name: "2 players",
 			fields: fields{
 				Deck:        NewDeck(),
-				Players:     Table(2),
+				Players:     2,
 				Round:       0,
 				playerIndex: 0,
 			},
@@ -31,7 +31,7 @@ func TestGame_PlayerCount(t *testing.T) {
 			name: "3 players",
 			fields: fields{
 				Deck:        NewDeck(),
-				Players:     Table(3),
+				Players:     3,
 				Round:       0,
 				playerIndex: 0,
 			},
@@ -41,7 +41,7 @@ func TestGame_PlayerCount(t *testing.T) {
 			name: "4 players",
 			fields: fields{
 				Deck:        NewDeck(),
-				Players:     Table(4),
+				Players:     4,
 				Round:       0,
 				playerIndex: 0,
 			},
@@ -51,11 +51,13 @@ func TestGame_PlayerCount(t *testing.T) {
 	for i := range tests {
 		tt := tests[i]
 		t.Run(tt.name, func(t *testing.T) {
+			players, playersInfo := Table(tt.fields.Players)
 			g := &Game{
 				Deck:        tt.fields.Deck,
-				Players:     tt.fields.Players,
+				Players:     players,
 				Round:       tt.fields.Round,
 				playerIndex: tt.fields.playerIndex,
+				playersInfo: playersInfo,
 			}
 			if got := g.PlayerCount(); got != tt.want {
 				t.Errorf("Game.PlayerCount() = %v, want %v", got, tt.want)
@@ -94,10 +96,10 @@ func TestGame_State(t *testing.T) {
 
 	expect := func(p *Player, pI PlayerInfo) {
 		if len(p.Cards) != pI.CardCount {
-			t.Error("unexpected state card count")
+			t.Error("unexpected state card count", p, pI)
 		}
 		if p.Water != pI.Water {
-			t.Error("unexpected state water")
+			t.Error("unexpected state water", p, pI)
 		}
 	}
 	for i := 0; i < nbPlayer; i++ {
@@ -119,7 +121,7 @@ func TestGame_EntireGame(t *testing.T) {
 		// always pick the first action
 		a := p.AvailableActions()[0]
 		fmt.Println(a)
-		p.Play(game.Deck, a)
+		p.Play(game.Deck, a, nil)
 		p.AddCard(game.Deck.Pick())
 		// always pick the first action
 		p = game.NextPlayer()

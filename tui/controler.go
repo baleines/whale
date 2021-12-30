@@ -25,7 +25,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	if m.game.CurentPlayerIndex() != m.humamIdx {
 		if _, ok := msg.(TickEvent); ok {
 			// always plays the first available action
-			player.Play(m.game.Deck, m.actions[0])
+			player.Play(m.game.Deck, m.actions[0], nil)
 			if m.game.CurentPlayer().IsWinner() {
 				m.end = true
 			}
@@ -62,7 +62,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		// the selected state for the item that the cursor is pointing at.
 		case "enter", " ":
 			if len(m.actions) > 0 {
-				player.Play(m.game.Deck, m.actions[m.cursor])
+				player.Play(m.game.Deck, m.actions[m.cursor], nil)
 			}
 			player.AddCard(m.game.Deck.Pick())
 			if m.game.NextPlayer() == nil {

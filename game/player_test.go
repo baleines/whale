@@ -89,7 +89,7 @@ func TestPlayer_AvailableActions(t *testing.T) {
 }
 
 func TestPlayer_String(t *testing.T) {
-	p := NewPlayer(BonusPirat)
+	p := NewPlayer(BonusPirat, nil)
 	p.AddCard(Water)
 	if p.String() != `Water:0 Cards:[||]` {
 		t.Errorf("unexpected player representation:%s", p.String())
@@ -97,7 +97,7 @@ func TestPlayer_String(t *testing.T) {
 }
 
 func TestPlayer_Info(t *testing.T) {
-	p := NewPlayer(BonusPirat)
+	p := NewPlayer(BonusPirat, nil)
 	if !reflect.DeepEqual(p.Info(), PlayerInfo{
 		CardCount:   0,
 		Water:       0,
@@ -188,7 +188,7 @@ func TestPlayer_Play(t *testing.T) {
 				BonusType:   tt.fields.BonusType,
 				BonusPlayed: tt.fields.BonusPlayed,
 			}
-			p.Play(tt.args.d, tt.args.a)
+			p.Play(tt.args.d, tt.args.a, nil)
 			if got := (want{tt.args.d.discarded, p.Water}); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Player.Play() = %#v, want %#v", got, tt.want)
 			}
