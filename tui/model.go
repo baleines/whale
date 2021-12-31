@@ -9,11 +9,12 @@ import (
 )
 
 type model struct {
-	game     *game.Game
-	actions  []game.Action // items on the to-do list
-	cursor   int           // which to-do list item our cursor is pointing at
-	end      bool          // indicates end of game
-	humamIdx int           // indicate the index of the human playing
+	game            *game.Game
+	actions         []game.Action // items on the to-do list
+	selectedPlayers []int         // players to select for actions needing it
+	cursor          int           // which to-do list item our cursor is pointing at
+	end             bool          // indicates end of game
+	humamIdx        int           // indicate the index of the human playing
 }
 
 // NewWhale returns a model for a one player whale game

@@ -86,6 +86,8 @@ func ActionList() []Action {
 
 // Player is holding player data
 type Player struct {
+	// index of player in the game
+	ID int
 	// Cards in player hand
 	Cards []Card
 	// Water level of the player
@@ -100,6 +102,8 @@ type Player struct {
 
 // PlayerInfo represents public player data
 type PlayerInfo struct {
+	// index of player in the game
+	ID int
 	// CardCount number of cards of player
 	CardCount int
 	// Water level of the player
@@ -111,8 +115,9 @@ type PlayerInfo struct {
 }
 
 // NewPlayer creates a player with the given bonus
-func NewPlayer(bonus Bonus, playersInfo *[]PlayerInfo) *Player {
+func NewPlayer(id int, bonus Bonus, playersInfo *[]PlayerInfo) *Player {
 	return &Player{
+		ID:          id,
 		Water:       0,
 		Cards:       []Card{},
 		BonusType:   bonus,
@@ -137,6 +142,26 @@ func (p *Player) String() string {
 // IsWinner returns true is the player won
 func (p *Player) IsWinner() bool {
 	return p.Water >= 5
+}
+
+func (p *Player) OtherPlayersWithWater() []int {
+	playersWithWater := make([]int, 0)
+	for i := range *p.PlayersInfo {
+		if (*p.PlayersInfo)[i].Water > 0 && (*p.PlayersInfo)[i].ID != p.ID {
+			playersWithWater = append(playersWithWater, (*p.PlayersInfo)[i].ID)
+		}
+	}
+	return playersWithWater
+}
+
+func (p *Player) OtherPlayers() []int {
+	otherPlayers := make([]int, 0)
+	for i := range *p.PlayersInfo {
+		if (*p.PlayersInfo)[i].ID != p.ID {
+			otherPlayers = append(otherPlayers, (*p.PlayersInfo)[i].ID)
+		}
+	}
+	return otherPlayers
 }
 
 // AvailableActions list action available for player
@@ -171,21 +196,21 @@ func (p *Player) AvailableActions() []Action {
 	actions = append(actions, Skip)
 	// bonuses Not implemented yet
 	if !p.BonusPlayed && p.BonusType != BonusUnknown {
-		var action Action
 		switch p.BonusType {
 		case BonusPirat:
-			action = PlayPirat
+			if len(p.OtherPlayersWithWater()) > 0 {
+				actions = append(actions, PlayPirat)
+			}
 		case BonusGhost:
-			action = PlayGhost
+			actions = append(actions, PlayGhost)
 		case BonusRound:
-			action = PlayRound
+			actions = append(actions, PlayRound)
 		case BonusPiranha:
-			action = PlayPiranha
+			actions = append(actions, PlayPiranha)
 		default:
 			fmt.Println("unexpected bonus:", p.BonusType)
 			panic("invalid bonus")
 		}
-		actions = append(actions, action)
 	}
 	return actions
 }
@@ -300,6 +325,7 @@ func (p *Player) PlayBonus(b Bonus, targetedPlayers []*Player) bool {
 // Info return info on player available to all players
 func (p *Player) Info() PlayerInfo {
 	return PlayerInfo{
+		ID:          p.ID,
 		CardCount:   len(p.Cards),
 		Water:       p.Water,
 		BonusType:   p.BonusType,

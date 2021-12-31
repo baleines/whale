@@ -45,7 +45,7 @@ func Table(nbPlayers int) ([]Player, *[]PlayerInfo) {
 	// lazy intialisation of players info could be improved
 	playersInfo := make([]PlayerInfo, nbPlayers)
 	for i := 0; i < nbPlayers; i++ {
-		players[i] = *NewPlayer(bonuses[i], &playersInfo)
+		players[i] = *NewPlayer(i, bonuses[i], &playersInfo)
 	}
 	return players, &playersInfo
 }
@@ -91,6 +91,17 @@ func (g *Game) CurentPlayer() *Player {
 // CurentPlayerIndex index is the index of player to play
 func (g *Game) CurentPlayerIndex() int {
 	return g.playerIndex
+}
+
+// OtherPlayersWithWater returns other players with water
+func (g *Game) OtherPlayersWithWater() []int {
+	playersWithWater := make([]int, 0)
+	for i := range g.Players {
+		if g.Players[i].Info().Water > 0 && i != g.playerIndex {
+			playersWithWater = append(playersWithWater, i)
+		}
+	}
+	return playersWithWater
 }
 
 // NextPlayer returns the next player to play

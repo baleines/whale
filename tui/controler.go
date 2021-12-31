@@ -1,6 +1,8 @@
 package tui
 
 import (
+	"whale/game"
+
 	tea "github.com/charmbracelet/bubbletea"
 )
 
@@ -61,8 +63,44 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		// The "enter" key and the spacebar (a literal space) toggle
 		// the selected state for the item that the cursor is pointing at.
 		case "enter", " ":
+			selectMode := 0
 			if len(m.actions) > 0 {
-				player.Play(m.game.Deck, m.actions[m.cursor], nil)
+				// case of bonuses
+				actionsSelect1 := []game.Action{game.PlayPirat, game.PlayGhost}
+				actionsSelect2 := []game.Action{game.PlayPiranha}
+				for _, a := range actionsSelect1 {
+					if m.actions[m.cursor] == a {
+						selectMode = 1
+					}
+				}
+				for _, a := range actionsSelect2 {
+					if m.actions[m.cursor] == a {
+						selectMode = 2
+					}
+				}
+				if selectMode == 0 {
+					player.Play(m.game.Deck, m.actions[m.cursor], nil)
+				} else {
+					switch selectMode {
+					case 1:
+						if m.actions[m.cursor] == game.PlayPirat {
+							m.selectedPlayers = player.OtherPlayersWithWater()
+						} else {
+							m.selectedPlayers = player.OtherPlayers()
+						}
+						player.Play(m.game.Deck, m.actions[m.cursor],
+							[]*game.Player{&m.game.Players[m.selectedPlayers[0]]})
+					case 2:
+						m.selectedPlayers = player.OtherPlayers()
+						player.Play(m.game.Deck, m.actions[m.cursor],
+							[]*game.Player{
+								&m.game.Players[m.selectedPlayers[0]],
+								&m.game.Players[m.selectedPlayers[1]],
+							})
+					default:
+						panic("unexpected select mode")
+					}
+				}
 			}
 			player.AddCard(m.game.Deck.Pick())
 			if m.game.NextPlayer() == nil {
