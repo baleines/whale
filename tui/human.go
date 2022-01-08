@@ -30,7 +30,7 @@ func (m *model) Human(msg tea.Msg, player *game.Player) bool {
 			selectMode := 0
 			if len(m.actions) > 0 {
 				// case of bonuses
-				actionsSelect1 := []game.Action{game.PlayPirat, game.PlayGhost}
+				actionsSelect1 := []game.Action{game.PlayPirat, game.PlayGhost, game.PlayRound}
 				actionsSelect2 := []game.Action{game.PlayPiranha}
 				for _, a := range actionsSelect1 {
 					if m.actions[m.cursor] == a {
@@ -52,8 +52,17 @@ func (m *model) Human(msg tea.Msg, player *game.Player) bool {
 						} else {
 							m.selectedPlayers = player.OtherPlayers()
 						}
-						player.Play(m.game.Deck, m.actions[m.cursor],
-							[]*game.Player{&m.game.Players[m.selectedPlayers[0]]})
+						players := make([]*game.Player, 0)
+						// round targets all players
+						if m.actions[m.cursor] == game.PlayRound {
+							for i := range m.game.Players {
+								players = append(players, &m.game.Players[i])
+							}
+						} else {
+							// take the first player as target for now todo fix
+							players = append(players, &m.game.Players[m.selectedPlayers[0]])
+						}
+						player.Play(m.game.Deck, m.actions[m.cursor], players)
 					case 2:
 						m.selectedPlayers = player.OtherPlayers()
 						player.Play(m.game.Deck, m.actions[m.cursor],
