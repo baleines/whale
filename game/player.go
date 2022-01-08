@@ -252,7 +252,7 @@ func (p *Player) Play(d *Deck, a Action, targetedPlayers []*Player) {
 			panic("invalid action")
 		}
 	case PlayGhost:
-		if !p.PlayBonus(BonusPiranha, targetedPlayers) {
+		if !p.PlayBonus(BonusGhost, targetedPlayers) {
 			panic("invalid action")
 		}
 	case PlayRound:
