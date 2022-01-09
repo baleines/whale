@@ -10,7 +10,9 @@ Whale is a fun simple card game for 2 to 4 players, you have reached the TUI ver
 
 The game is in development and works with small limitations :
 
-Bonuses are not implemented yet.
+Bonuses are not fully implemented yet :
+- missing choice of player for human bonuses (take by default first available player)
+- bots never play bonuses
 
 ## gif overview
 
@@ -88,7 +90,8 @@ golangci-lint run ./...
 
 ## Roadmap
 
-- fix asciinema to suport utf8
-- implement bonuses
 - split package to make it a lib
+- improve coverage
+- fix asciinema to suport utf8
+- implement missing bonuses features
 - implement a web version using view-js
