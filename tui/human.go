@@ -47,14 +47,17 @@ func (m *model) Human(msg tea.Msg, player *game.Player) bool {
 				} else {
 					switch selectMode {
 					case 1:
-						if m.actions[m.cursor] == game.PlayPirat {
+						switch m.actions[m.cursor] {
+						case game.PlayPirat:
 							// TODO fix take first player always
 							m.selectedPlayers = []int{player.OtherPlayersWithWater()[0]}
-						} else if m.actions[m.cursor] == game.PlayRound {
+						case game.PlayRound:
 							m.selectedPlayers = player.AllPlayers()
-						} else if m.actions[m.cursor] == game.PlayGhost {
+						case game.PlayGhost:
 							// TODO fix take first player always
 							m.selectedPlayers = []int{player.OtherPlayers()[0]}
+						default:
+							panic("unexpected action")
 						}
 					case 2:
 						// TODO fix take first 2 player always
