@@ -43,36 +43,26 @@ func (m *model) Human(msg tea.Msg, player *game.Player) bool {
 					}
 				}
 				if selectMode == 0 {
-					player.Play(m.game.Deck, m.actions[m.cursor], nil)
+					player.Play(m.game.Deck, m.actions[m.cursor], nil, nil)
 				} else {
 					switch selectMode {
 					case 1:
 						if m.actions[m.cursor] == game.PlayPirat {
-							m.selectedPlayers = player.OtherPlayersWithWater()
-						} else {
-							m.selectedPlayers = player.OtherPlayers()
+							// TODO fix take first player always
+							m.selectedPlayers = []int{player.OtherPlayersWithWater()[0]}
+						} else if m.actions[m.cursor] == game.PlayRound {
+							m.selectedPlayers = player.AllPlayers()
+						} else if m.actions[m.cursor] == game.PlayGhost {
+							// TODO fix take first player always
+							m.selectedPlayers = []int{player.OtherPlayers()[0]}
 						}
-						players := make([]*game.Player, 0)
-						// round targets all players
-						if m.actions[m.cursor] == game.PlayRound {
-							for i := range m.game.Players {
-								players = append(players, &m.game.Players[i])
-							}
-						} else {
-							// take the first player as target for now todo fix
-							players = append(players, &m.game.Players[m.selectedPlayers[0]])
-						}
-						player.Play(m.game.Deck, m.actions[m.cursor], players)
 					case 2:
-						m.selectedPlayers = player.OtherPlayers()
-						player.Play(m.game.Deck, m.actions[m.cursor],
-							[]*game.Player{
-								&m.game.Players[m.selectedPlayers[0]],
-								&m.game.Players[m.selectedPlayers[1]],
-							})
+						// TODO fix take first 2 player always
+						m.selectedPlayers = []int{player.OtherPlayers()[0], player.OtherPlayers()[1]}
 					default:
 						panic("unexpected select mode")
 					}
+					player.Play(m.game.Deck, m.actions[m.cursor], m.selectedPlayers, m.game.Players)
 				}
 			}
 			return true

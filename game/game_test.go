@@ -121,7 +121,7 @@ func TestGame_EntireGame(t *testing.T) {
 		// always pick the first action
 		a := p.AvailableActions()[0]
 		fmt.Println(a)
-		p.Play(game.Deck, a, nil)
+		p.Play(game.Deck, a, nil, nil)
 		p.AddCard(game.Deck.Pick())
 		// always pick the first action
 		p = game.NextPlayer()

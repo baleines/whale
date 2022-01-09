@@ -144,6 +144,7 @@ func (p *Player) IsWinner() bool {
 	return p.Water >= 5
 }
 
+// OtherPlayersWithWater returns a slice of ids of players having water
 func (p *Player) OtherPlayersWithWater() []int {
 	playersWithWater := make([]int, 0)
 	for i := range *p.PlayersInfo {
@@ -154,6 +155,24 @@ func (p *Player) OtherPlayersWithWater() []int {
 	return playersWithWater
 }
 
+// playersFromIDs is an internal method to retrieve players pointers form IDs
+func (p *Player) playersFromIDs(ids []int, allPlayers []*Player) []*Player {
+	players := make([]*Player, 0)
+	for i := range allPlayers {
+		for j := range ids {
+			if allPlayers[i].ID == ids[j] {
+				players = append(players, allPlayers[i])
+				break
+			}
+		}
+	}
+	if len(players) != len(ids) {
+		panic("unexpected result length")
+	}
+	return players
+}
+
+// OtherPlayers returns a slice of ids of other players
 func (p *Player) OtherPlayers() []int {
 	otherPlayers := make([]int, 0)
 	for i := range *p.PlayersInfo {
@@ -162,6 +181,15 @@ func (p *Player) OtherPlayers() []int {
 		}
 	}
 	return otherPlayers
+}
+
+// AllPlayers returns a slice of ids of all players ordered
+func (p *Player) AllPlayers() []int {
+	playersIDs := make([]int, 0)
+	for i := range *p.PlayersInfo {
+		playersIDs = append(playersIDs, (*p.PlayersInfo)[i].ID)
+	}
+	return playersIDs
 }
 
 // AvailableActions list action available for player
@@ -216,7 +244,9 @@ func (p *Player) AvailableActions() []Action {
 }
 
 // Play makes the given action and discard cards to deck
-func (p *Player) Play(d *Deck, a Action, targetedPlayers []*Player) {
+// note: there is coupling here we need players to make the actions
+func (p *Player) Play(d *Deck, a Action, ids []int, allPlayers []*Player) {
+	selectedPlayers := p.playersFromIDs(ids, allPlayers)
 	switch a {
 	case Skip:
 		// no op
@@ -248,19 +278,19 @@ func (p *Player) Play(d *Deck, a Action, targetedPlayers []*Player) {
 		p.Water += 2
 		d.Discard(DoubleWave)
 	case PlayPirat:
-		if !p.PlayBonus(BonusPirat, targetedPlayers) {
+		if !p.PlayBonus(BonusPirat, selectedPlayers) {
 			panic("invalid action")
 		}
 	case PlayGhost:
-		if !p.PlayBonus(BonusGhost, targetedPlayers) {
+		if !p.PlayBonus(BonusGhost, selectedPlayers) {
 			panic("invalid action")
 		}
 	case PlayRound:
-		if !p.PlayBonus(BonusRound, targetedPlayers) {
+		if !p.PlayBonus(BonusRound, selectedPlayers) {
 			panic("invalid action")
 		}
 	case PlayPiranha:
-		if !p.PlayBonus(BonusPiranha, targetedPlayers) {
+		if !p.PlayBonus(BonusPiranha, selectedPlayers) {
 			panic("invalid action")
 		}
 	}

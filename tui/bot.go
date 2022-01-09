@@ -11,6 +11,7 @@ func (m model) Bot(msg tea.Msg, player *game.Player) bool {
 
 	// TODO fix coupling with m.actions
 	// always plays the first available action
-	player.Play(m.game.Deck, m.actions[0], nil)
+	// TODO fix bot new play bonuses
+	player.Play(m.game.Deck, m.actions[0], nil, nil)
 	return true
 }

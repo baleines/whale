@@ -7,7 +7,7 @@ type Game struct {
 	// deck of cards
 	Deck *Deck
 	// slice holding players
-	Players []Player
+	Players []*Player
 	// number of current round
 	Round int
 	// index of playing player
@@ -30,7 +30,7 @@ type State struct {
 const intialCardCount = 3
 
 // Table creates nbPlayers players with random bonuses
-func Table(nbPlayers int) ([]Player, *[]PlayerInfo) {
+func Table(nbPlayers int) ([]*Player, *[]PlayerInfo) {
 	if nbPlayers < 2 {
 		panic("invalid player count must be more than 2")
 	}
@@ -41,11 +41,11 @@ func Table(nbPlayers int) ([]Player, *[]PlayerInfo) {
 	rand.Shuffle(len(bonuses), func(i, j int) {
 		bonuses[i], bonuses[j] = bonuses[j], bonuses[i]
 	})
-	players := make([]Player, nbPlayers)
+	players := make([]*Player, nbPlayers)
 	// lazy intialisation of players info could be improved
 	playersInfo := make([]PlayerInfo, nbPlayers)
 	for i := 0; i < nbPlayers; i++ {
-		players[i] = *NewPlayer(i, bonuses[i], &playersInfo)
+		players[i] = NewPlayer(i, bonuses[i], &playersInfo)
 	}
 	return players, &playersInfo
 }
@@ -85,23 +85,12 @@ func (g *Game) PlayerCount() int {
 
 // CurentPlayer is player to play
 func (g *Game) CurentPlayer() *Player {
-	return &g.Players[g.playerIndex]
+	return g.Players[g.playerIndex]
 }
 
 // CurentPlayerIndex index is the index of player to play
 func (g *Game) CurentPlayerIndex() int {
 	return g.playerIndex
-}
-
-// OtherPlayersWithWater returns other players with water
-func (g *Game) OtherPlayersWithWater() []int {
-	playersWithWater := make([]int, 0)
-	for i := range g.Players {
-		if g.Players[i].Info().Water > 0 && i != g.playerIndex {
-			playersWithWater = append(playersWithWater, i)
-		}
-	}
-	return playersWithWater
 }
 
 // NextPlayer returns the next player to play
@@ -120,7 +109,7 @@ func (g *Game) NextPlayer() *Player {
 		g.Round++
 		g.playerIndex = 0
 	}
-	return &g.Players[g.playerIndex]
+	return g.Players[g.playerIndex]
 }
 
 // State return information about the game available to all players

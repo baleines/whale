@@ -188,7 +188,7 @@ func TestPlayer_Play(t *testing.T) {
 				BonusType:   tt.fields.BonusType,
 				BonusPlayed: tt.fields.BonusPlayed,
 			}
-			p.Play(tt.args.d, tt.args.a, nil)
+			p.Play(tt.args.d, tt.args.a, nil, nil)
 			if got := (want{tt.args.d.discarded, p.Water}); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Player.Play() = %#v, want %#v", got, tt.want)
 			}
